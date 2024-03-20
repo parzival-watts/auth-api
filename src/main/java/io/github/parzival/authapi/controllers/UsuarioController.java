@@ -3,10 +3,7 @@ package io.github.parzival.authapi.controllers;
 import io.github.parzival.authapi.dtos.UsuarioDto;
 import io.github.parzival.authapi.services.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/usuarios")
@@ -19,5 +16,10 @@ public class UsuarioController {
     private UsuarioDto salvar(@RequestBody UsuarioDto usuarioDto){
 
         return usuarioService.salvar(usuarioDto);
+    }
+
+    @GetMapping
+    private String getOk(){
+        return "Ok";
     }
 }

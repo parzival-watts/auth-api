@@ -1,5 +1,6 @@
 package io.github.parzival.authapi.models;
 
+import io.github.parzival.authapi.enums.RoleEnum;
 import jakarta.persistence.*;
 
 @Entity
@@ -16,6 +17,8 @@ public class Usuario {
     private String login;
     @Column
     private String senha;
+
+    private RoleEnum role;
 
     public Usuario(){
 
