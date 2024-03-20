@@ -2,7 +2,13 @@ package io.github.parzival.authapi.models;
 
 import io.github.parzival.authapi.enums.RoleEnum;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
 @Table(name="TB_USUARIO")
 public class Usuario {
@@ -20,45 +26,10 @@ public class Usuario {
 
     private RoleEnum role;
 
-    public Usuario(){
-
-    }
-
     public Usuario(String nome, String login, String senha) {
         this.nome = nome;
         this.login = login;
         this.senha = senha;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getLogin() {
-        return login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    public String getSenha() {
-        return senha;
-    }
-
-    public void setSenha(String senha) {
-        this.senha = senha;
-    }
 }
