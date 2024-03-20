@@ -1,5 +1,9 @@
 package io.github.parzival.authapi.enums;
 
+
+import lombok.Getter;
+
+@Getter
 public enum RoleEnum {
     ADMIN("admin"),
     USER("user");
