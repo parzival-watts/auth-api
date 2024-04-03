@@ -1,6 +1,7 @@
 package io.github.parzival.authapi.controllers;
 
 import io.github.parzival.authapi.dtos.AuthDto;
+import io.github.parzival.authapi.services.AutenticacaoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,12 +15,15 @@ public class AutenticacaoController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    @Autowired
+    private AutenticacaoService autenticacaoService;
+
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
     public String auth(@RequestBody AuthDto authDto){
 
         var usuarioAutenticationToken = new UsernamePasswordAuthenticationToken(authDto.login(), authDto.senha());
         authenticationManager.authenticate(usuarioAutenticationToken);
-        return "token ....";
+        return autenticacaoService.obterToken(authDto);
     }
 }
