@@ -23,19 +23,20 @@ public class Usuario implements UserDetails {
     @GeneratedValue
     private Long id;
 
-    @Column
+    @Column(nullable = false)
     private String nome;
-    @Column
+    @Column(nullable = false)
     private String login;
-    @Column
+    @Column(nullable = false)
     private String senha;
-
+    @Column(nullable = false)
     private RoleEnum role;
 
-    public Usuario(String nome, String login, String senha) {
+    public Usuario(String nome, String login, String senha, RoleEnum role) {
         this.nome = nome;
         this.login = login;
         this.senha = senha;
+        this.role = role;
     }
 
     @Override
