@@ -9,6 +9,7 @@ import io.github.parzival.authapi.models.Usuario;
 import io.github.parzival.authapi.repositories.UsuarioRepository;
 import io.github.parzival.authapi.services.AutenticacaoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,6 +22,15 @@ import java.util.Date;
 
 @Service
 public class AutenticacaoServiceImpl implements AutenticacaoService {
+
+    @Value("${auth.jwt.token.secret}")
+    private String secretKey;
+
+    @Value("${auth.jwt.token.expiration}")
+    private Integer horaExpiracaoToken;
+
+    @Value("${auth.jwt.refresh-token.expiration}")
+    private Integer horaExpiracaoRefreshToken;
 
     @Autowired
     private UsuarioRepository usuarioRepository;
@@ -38,7 +48,7 @@ public class AutenticacaoServiceImpl implements AutenticacaoService {
 
     public String geraTokenJwt(Usuario usuario){
         try{
-            Algorithm algorithm = Algorithm.HMAC256("my-secret");
+            Algorithm algorithm = Algorithm.HMAC256(secretKey);
 
             return JWT.create()
                     .withIssuer("auth-api")
@@ -53,7 +63,7 @@ public class AutenticacaoServiceImpl implements AutenticacaoService {
 
     public String validaTokenJwt(String token){
         try{
-            Algorithm algorithm = Algorithm.HMAC256("my-secret");
+            Algorithm algorithm = Algorithm.HMAC256(secretKey);
 
             return JWT.require(algorithm)
                     .withIssuer("auth-api")
@@ -68,7 +78,7 @@ public class AutenticacaoServiceImpl implements AutenticacaoService {
 
     private Instant geraDataExpiracao() {
         return LocalDateTime.now()
-                .plusHours(8)
+                .plusHours(horaExpiracaoToken)
                 .toInstant(ZoneOffset.of("-03:00"));
     }
 
