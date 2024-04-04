@@ -18,8 +18,14 @@ public class UsuarioController {
         return usuarioService.salvar(usuarioDto);
     }
 
-    @GetMapping
-    private String getOk(){
-        return "Ok";
+    @GetMapping("/admin")
+    private String getAdmin(){
+        return "Permissão de administrador";
     }
+
+    @GetMapping
+    private String getUser(){
+        return "Permissão de usuario";
+    }
+
 }
