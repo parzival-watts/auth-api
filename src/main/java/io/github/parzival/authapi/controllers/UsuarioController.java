@@ -23,7 +23,7 @@ public class UsuarioController {
         return "Permissão de administrador";
     }
 
-    @GetMapping
+    @GetMapping("/user")
     private String getUser(){
         return "Permissão de usuario";
     }
