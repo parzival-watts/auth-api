@@ -1,6 +1,8 @@
 package io.github.parzival.authapi.controllers;
 
 import io.github.parzival.authapi.dtos.AuthDto;
+import io.github.parzival.authapi.dtos.RequestRefreshDto;
+import io.github.parzival.authapi.dtos.TokenResponseDto;
 import io.github.parzival.authapi.services.AutenticacaoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -32,10 +34,28 @@ public class AutenticacaoController {
     )
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
-    public String auth(@RequestBody AuthDto authDto){
+    public TokenResponseDto auth(@RequestBody AuthDto authDto){
 
         var usuarioAutenticationToken = new UsernamePasswordAuthenticationToken(authDto.login(), authDto.senha());
         authenticationManager.authenticate(usuarioAutenticationToken);
         return autenticacaoService.obterToken(authDto);
     }
+
+    @Operation(
+            summary = "Refresh Token",
+            description = "Rota para o refresh token",
+            responses = {
+                    @ApiResponse(
+                            description = "Seccess",
+                            responseCode = "200"
+                    )
+            }
+    )
+    @PostMapping("/refresh-token")
+    @ResponseStatus(HttpStatus.OK)
+    public TokenResponseDto authRefreshToken(@RequestBody RequestRefreshDto requestRefreshDto){
+
+        return autenticacaoService.obterRefreshToken(requestRefreshDto.refreshToken());
+    }
+
 }
