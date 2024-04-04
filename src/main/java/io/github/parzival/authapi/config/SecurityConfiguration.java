@@ -35,6 +35,7 @@ SecurityConfiguration {
                         .requestMatchers(HttpMethod.GET,"/usuarios/user").hasRole("USER")
                         .requestMatchers(HttpMethod.POST,"/usuarios").permitAll()
                         .requestMatchers(HttpMethod.POST,"/auth").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/auth/refresh-token").permitAll()
                         .requestMatchers(AUTH_WHITELIST).permitAll()
                         .anyRequest().authenticated()
                 )

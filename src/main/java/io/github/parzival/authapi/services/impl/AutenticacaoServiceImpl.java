@@ -5,11 +5,14 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import io.github.parzival.authapi.dtos.AuthDto;
+import io.github.parzival.authapi.dtos.TokenResponseDto;
 import io.github.parzival.authapi.models.Usuario;
 import io.github.parzival.authapi.repositories.UsuarioRepository;
 import io.github.parzival.authapi.services.AutenticacaoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -41,19 +44,23 @@ public class AutenticacaoServiceImpl implements AutenticacaoService {
     }
 
     @Override
-    public String obterToken(AuthDto authDto) {
+    public TokenResponseDto obterToken(AuthDto authDto) {
         Usuario usuario = usuarioRepository.findByLogin(authDto.login());
-        return geraTokenJwt(usuario);
+        return TokenResponseDto
+                .builder()
+                .token(geraTokenJwt(usuario, horaExpiracaoToken))
+                .refreshToken(geraTokenJwt(usuario,horaExpiracaoRefreshToken ))
+                .build();
     }
 
-    public String geraTokenJwt(Usuario usuario){
+    public String geraTokenJwt(Usuario usuario, Integer expiration){
         try{
             Algorithm algorithm = Algorithm.HMAC256(secretKey);
 
             return JWT.create()
                     .withIssuer("auth-api")
                     .withSubject(usuario.getLogin())
-                    .withExpiresAt(geraDataExpiracao())
+                    .withExpiresAt(geraDataExpiracao(expiration))
                     .sign(algorithm);
 
         }catch (JWTCreationException exception){
@@ -76,9 +83,30 @@ public class AutenticacaoServiceImpl implements AutenticacaoService {
         }
     }
 
-    private Instant geraDataExpiracao() {
+    @Override
+    public TokenResponseDto obterRefreshToken(String refreshToken) {
+
+        String login = validaTokenJwt(refreshToken);
+        Usuario usuario = usuarioRepository.findByLogin(login);
+
+        if(usuario == null){
+            throw new RuntimeException("Falhou ao gerar refresh token");
+        }
+
+        var autentication = new UsernamePasswordAuthenticationToken(usuario,null, usuario.getAuthorities());
+
+        SecurityContextHolder.getContext().setAuthentication(autentication);
+
+        return TokenResponseDto
+                .builder()
+                .token(geraTokenJwt(usuario, horaExpiracaoToken))
+                .refreshToken(geraTokenJwt(usuario,horaExpiracaoRefreshToken ))
+                .build();
+    }
+
+    private Instant geraDataExpiracao(Integer expiration) {
         return LocalDateTime.now()
-                .plusHours(horaExpiracaoToken)
+                .plusHours(expiration)
                 .toInstant(ZoneOffset.of("-03:00"));
     }
 
