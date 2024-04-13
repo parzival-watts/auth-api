@@ -1,6 +1,7 @@
 package io.github.parzival.authapi.services.impl;
 
 import io.github.parzival.authapi.dtos.UsuarioDto;
+import io.github.parzival.authapi.infra.exceptions.BusinessException;
 import io.github.parzival.authapi.models.Usuario;
 import io.github.parzival.authapi.repositories.UsuarioRepository;
 import io.github.parzival.authapi.services.UsuarioService;
@@ -24,7 +25,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         Usuario usuarioExiste = usuarioRepository.findByLogin(usuarioDto.login());
 
         if (usuarioExiste != null){
-            throw new RuntimeException("Usuario ja existe");
+            throw new BusinessException("Usuario ja existe");
         }
 
         var passwordHash = passwordEncoder.encode(usuarioDto.senha());
