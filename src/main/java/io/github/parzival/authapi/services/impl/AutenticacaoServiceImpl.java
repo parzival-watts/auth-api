@@ -6,6 +6,7 @@ import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import io.github.parzival.authapi.dtos.AuthDto;
 import io.github.parzival.authapi.dtos.TokenResponseDto;
+import io.github.parzival.authapi.infra.exceptions.UnauthorizedException;
 import io.github.parzival.authapi.models.Usuario;
 import io.github.parzival.authapi.repositories.UsuarioRepository;
 import io.github.parzival.authapi.services.AutenticacaoService;
@@ -90,7 +91,7 @@ public class AutenticacaoServiceImpl implements AutenticacaoService {
         Usuario usuario = usuarioRepository.findByLogin(login);
 
         if(usuario == null){
-            throw new RuntimeException("Falhou ao gerar refresh token");
+            throw new UnauthorizedException("Unauthorized");
         }
 
         var autentication = new UsernamePasswordAuthenticationToken(usuario,null, usuario.getAuthorities());
